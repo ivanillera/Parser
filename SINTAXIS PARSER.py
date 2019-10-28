@@ -196,7 +196,16 @@ def parser(tokens):
                 break
             if error == True: 
                 index = indexAux #Índice Auxiliar representa al pivote de retroceso.
-            Parse()
+            
     
-                
-        
+    return Parse()
+
+
+assert parser([('ID'), ('_BIGOREQUAL'), ('ID')]) == False
+assert parser(['eof']) == True
+
+
+
+
+
+
