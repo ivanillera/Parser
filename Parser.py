@@ -8,9 +8,19 @@ prods = {
     ],
 
     'ListaDecl':[
-        ['ListaDecl','Declaracion'],
+        ['Declaracion','ListaDeclPrima'],
         []
     ],
+
+    'ListaDeclPrima':[
+        ['ListaDecl'],
+        []
+    ],
+
+   ## 'ListaDecl':[ Original con recursividad izquierda.
+   ##     ['ListaDecl','Declaracion'],
+   ##     []
+   ## ],
 
     'Declaracion':[
         ['FunDecl'],
@@ -31,10 +41,19 @@ prods = {
         ['Parametros']
     ],
 
-    'Parametros':[
+    'Parametros' : [
         ['ID'],
-        ['Parametros','_COMMA','ID']
+        ['_COMMA','ID','ParametrosPrima']
     ],
+
+    'ParametrosPrima' : [
+        ['Parametros']
+    ],
+
+    ##'Parametros':[ Original con recursividad.
+    ##    ['ID'],
+    ##    ['Parametros','_COMMA','ID']
+    ##,
 
     'VarDecl':[
         ['_VAR','ID','_SEMICOLON'],
@@ -93,7 +112,7 @@ prods = {
     ],
 
     'Bloque': [
-        ['_BRAOPEN','ListaSent','_BRACLOSE']
+        ['_BRAOPEN','ListaSent','_BRACLOSE','_SEMICOLON']
     ],
 
     'ListaSent': [
@@ -113,8 +132,8 @@ prods = {
 
     'Igua': [
         ['Comparacion'],
-        ['Comparacion','_IGUAL','_IGUAL','Igua'],
-        ['Comparacion','_EXCLAMATION','_IGUAL','Igua']
+        ['Comparacion','_EQUAL','Igua'],
+        ['Comparacion','_DIFERENT','Igua']
     ],
 
     'Comparacion': [
@@ -154,6 +173,14 @@ prods = {
 
 }
  ############################
+terminales = [
+    '_EOF', 'fun', '_PAROPEN', '_PARCLOSE', '_COMMA', '_VAR', '_SEMICOLON',
+    '_IGUAL', 'for', '_IF', '_ELSE', 'return', '_WHILE', '_BRAOPEN', '_BRACLOSE',
+    '_OR', '_AND', '_EQUAL', '_DIFERENT', '_BIGGER', '_SMALLER', '_SMALLOREQUAL',
+    '_BIGOREQUAL', '_GUION', '_PLUS', '_SLASH', '_ASTERISK', '_EXCLAMATION', 
+    '_TRUE', '_FALSE'
+
+]
 
 def esTerminal(simbolo):
     simbolo in terminales
@@ -172,7 +199,7 @@ def parser(cadena):
         index = self['index']
         tokens = self['tokens']
         token_apuntado = tokens[index]
-        tipo_token_apuntado = token_apuntdo[0] # Primer elemento de tupla.
+        tipo_token_apuntado = token_apuntado[0] # Primer elemento de tupla.
         return tipo_token_apuntado == '_EOF'
 
 
@@ -200,7 +227,7 @@ def parser(cadena):
                     self['error'] = True
                     break   
 
-            if noEsTerminal(simbolo):
+            if esNoTerminal(simbolo):
                 pni(simbolo)
                 if self['error'] == True:
                     break
@@ -223,10 +250,7 @@ def parser(cadena):
     return Parse()
 
 
-
+print(parser('a'))
 #assert parser('a + b') == True
 #ssert parser('fun (a + b)') == True
-
-
-
 
