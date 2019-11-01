@@ -13,8 +13,7 @@ prods = {
     ],
 
     'ListaDeclPrima':[
-        ['ListaDecl'],
-        []
+        ['Declaracion','ListaDecl']
     ],
 
    ## 'ListaDecl':[ Original con recursividad izquierda.
@@ -33,7 +32,7 @@ prods = {
     ],
 
     'Funcion': [
-        ['ID', '_PAROPEN', 'ListaParametros', '_PARCLOSE', 'Bloque']
+        ['ID', '_PAROPEN', 'Lista   os', '_PARCLOSE', 'Bloque']
     ],
 
     'ListaParametros': [
@@ -41,13 +40,13 @@ prods = {
         ['Parametros']
     ],
 
-    'Parametros' : [
-        ['ID'],
-        ['_COMMA','ID','ParametrosPrima']
+    'Parametros':[
+        ['ID', 'ParametrosPrima']
     ],
 
-    'ParametrosPrima' : [
-        ['Parametros']
+    'ParametrosPrima':[
+        ['_COMMA', 'ID', 'ParametrosPrima'],
+        []
     ],
 
     ##'Parametros':[ Original con recursividad.
@@ -182,11 +181,44 @@ terminales = [
 
 ]
 
+no_Terminales = ['Programa',
+                'ListaDecl',
+                'ListaDeclPrima', # Agregado por eliminacion de recursividad izq
+                'Declaracion',
+                'FunDecl',
+                'Funcion',
+                'ListaParametros',
+                'Parametros',
+                'ParametrosPrima', # Agregado por eliminacion de recursividad izq
+                'VarDecl',
+                'Sentencia',
+                'ExprSent',
+                'Expresion',
+                'Asignacion',
+                'ForSent',
+                'PriArg',
+                'AdicArg',
+                'IfSent',
+                'ReturnSent',
+                'WhileSent',
+                'Bloque',
+                'ListaSent',
+                'OLogico',
+                'YLogico',
+                'Igua',
+                'Comparacion',
+                'Suma',
+                'Mult',
+                'Unario',
+                'Primitivo'
+]
+
+
 def esTerminal(simbolo):
-    simbolo in terminales
+    return simbolo in terminales
 
 def esNoTerminal(simbolo):    
-    simbolo in prods
+    return simbolo in no_Terminales
 
 def parser(cadena):
     self = {
@@ -214,6 +246,7 @@ def parser(cadena):
     def procesar(parteDerecha):
 
         print(('procesar: ', parteDerecha, self ))
+
         index = self['index']
         tokens = self['tokens']
         token_apuntado = tokens[index]
@@ -250,7 +283,9 @@ def parser(cadena):
     return Parse()
 
 
-print(parser('a'))
+#print(parser(''))
+# print(parser(''))
+print(parser('var id ;'))
 #assert parser('a + b') == True
 #ssert parser('fun (a + b)') == True
 
