@@ -57,6 +57,7 @@ def ListaSimbolos(cadena):
 #Este es necesario para saber si llegue a un estado de TODO RESULTADO_TRAMPA en la cadena introducida
 def TodoTrampa(cadena): 
 	if(a_eof(cadena) == RESULTADO_TRAMPA and
+		a_fun(cadena) == RESULTADO_TRAMPA and
 		a_if(cadena) == RESULTADO_TRAMPA and
 		a_else(cadena) == RESULTADO_TRAMPA and
 		a_parclose(cadena) == RESULTADO_TRAMPA and
@@ -100,6 +101,8 @@ def TipoCadena(cadena):
 		return "_ELSE"
 	elif a_parclose(cadena) == RESULTADO_ACEPTADO:
 		return "_PARCLOSE"
+	elif a_fun(cadena) == RESULTADO_ACEPTADO:
+		return "_FUN"
 	elif a_paropen(cadena) == RESULTADO_ACEPTADO:
 		return "_PAROPEN"
 	elif a_comma(cadena) == RESULTADO_ACEPTADO:
@@ -980,31 +983,32 @@ def a_true(cadena):
 		
 #delta var
 def d_var(estado_anterior, caracter):
-	if estado_anterior == 0 and caracter == "v":
-		return 1
-	if estado_anterior == 1 and caracter == "a":
-		return 2
-	if estado_anterior == 2 and caracter == "r":
-		return 3
-
-	
-	return RESULTADO_TRAMPA
+    if estado_anterior == 0 and caracter == "v":
+        return 1
+    if estado_anterior == 1 and caracter == "a":
+        return 2
+    if estado_anterior == 2 and caracter == "r":
+        return 3
+    
+    return TRAMPA
 
 #automata var
-def a_var(cadena):
-	Finales = [3]
-	estado_actual = 0
 
-	for caracter in cadena:
-		estado_proximo = d_var(estado_actual, caracter)
-		if estado_proximo == RESULTADO_TRAMPA:
-			return RESULTADO_TRAMPA
-		estado_actual = estado_proximo
-	
-	if estado_actual in Finales:
-		return RESULTADO_ACEPTADO
-	else:
-		return RESULTADO_NO_ACEPTADO
+def a_var(cadena):
+    Finales = [3]
+    estado_actual = 0
+
+    for caracter in cadena:
+        estado_proximo = d_var(estado_actual, caracter)
+        if estado_proximo == TRAMPA:
+            return RESULTADO_TRAMPA
+        estado_actual = estado_proximo
+
+    if estado_actual in Finales:
+        return RESULTADO_ACEPTADO
+    else:
+        return RESULTADO_NO_ACEPTADO
+
 		
 #delta while
 def d_while(estado_anterior, caracter):
@@ -1037,6 +1041,34 @@ def a_while(cadena):
 		return RESULTADO_ACEPTADO
 	else:
 		return RESULTADO_NO_ACEPTADO
+
+def d_fun(estado_anterior, caracter):
+    if estado_anterior == 0 and caracter == "f":
+        return 1
+    if estado_anterior == 1 and caracter == "u":
+        return 2
+    if estado_anterior == 2 and caracter == "n":
+        return 3
+
+    
+    return TRAMPA
+
+def a_fun(cadena):
+    Finales = [3]
+    estado_actual = 0
+
+    for caracter in cadena:
+        estado_proximo = d_fun(estado_actual, caracter)
+        if estado_proximo == TRAMPA:
+            return RESULTADO_TRAMPA
+        estado_actual = estado_proximo
+
+    if estado_actual in Finales:
+        return RESULTADO_ACEPTADO
+    else:
+        return RESULTADO_NO_ACEPTADO
+
+
 		
 #####################################################################################
 
@@ -1049,5 +1081,6 @@ assert lexer("") == [('_EOF','EOF')]
 assert lexer("chasquibum") == [('ID', 'chasquibum'),('_EOF','EOF')]
 assert lexer(" if ( { } ) else") == [('_IF', 'if'), ('_PAROPEN', '('), ('_BRAOPEN', '{'), ('_BRACLOSE', '}'), ('_PARCLOSE', ')'), ('_ELSE', 'else'),('_EOF','EOF')]
 assert lexer("Hola") == [("ID", "Hola"),('_EOF','EOF')]
-assert lexer("fun funo if for else return whileo while") == [('ID', 'fun'), ('ID', 'funo'), ('_IF', 'if'), ('_FOR', 'for'), ('_ELSE', 'else'), ('_RETURN', 'return'), ('ID', 'whileo'), ('_WHILE', 'while'),('_EOF','EOF')]
-
+assert lexer("fun funo if for else return whileo while") == [('_FUN', 'fun'), ('ID', 'funo'), ('_IF', 'if'), ('_FOR', 'for'), ('_ELSE', 'else'), ('_RETURN', 'return'), ('ID', 'whileo'), ('_WHILE', 'while'),('_EOF','EOF')]
+assert lexer("var") == [("_VAR", "var"),('_EOF','EOF')]
+assert lexer("var id ;") == [('_VAR', 'var'), ('ID', 'id'), ('_SEMICOLON', ';'), ('_EOF', 'EOF')]
