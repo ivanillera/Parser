@@ -1052,3 +1052,4 @@ assert lexer("Hola") == [("ID", "Hola"),('_EOF','EOF')]
 assert lexer("fun funo if for else return whileo while") == [('_FUN', 'fun'), ('ID', 'funo'), ('_IF', 'if'), ('_FOR', 'for'), ('_ELSE', 'else'), ('_RETURN', 'return'), ('ID', 'whileo'), ('_WHILE', 'while'),('_EOF','EOF')]
 assert lexer("var") == [("_VAR", "var"),('_EOF','EOF')]
 assert lexer("var id ;") == [('_VAR', 'var'), ('ID', 'id'), ('_SEMICOLON', ';'), ('_EOF', 'EOF')]
+#print(lexer('fun id ( ) { var id ; } ;'))

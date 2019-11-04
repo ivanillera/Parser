@@ -1,7 +1,5 @@
 from Lexer import *
 
-
-## TODO: RECURSIVIDAD IZQUIERDA.
 prods = {
     'Programa':[
         ['ListaDecl', '_EOF'],
@@ -103,7 +101,7 @@ prods = {
     ],
 
     'Bloque':[
-        ['_BRAOPEN', 'ListaDecl', '_BRAOPEN', '_SEMICOLON'],
+        ['_BRAOPEN', 'ListaDecl', '_BRACLOSE', '_SEMICOLON'],
         ['_BRAOPEN', '_BRACLOSE', '_SEMICOLON']
     ],
 
@@ -214,7 +212,6 @@ def parser(cadena):
         if self['index'] == len(self['tokens']): #Para solucionar list index out of range
             self['index'] -= 1
         token_apuntado = self['tokens'][self['index']]
-        #print('tiene que comparar', token_actual[0], 'EOF', self['error'])
         if self['error'] == False and token_apuntado[0] == '_EOF':
             return True
         else:
@@ -224,21 +221,15 @@ def parser(cadena):
         for simbolo in parteDerecha:
             token_apuntado = self['tokens'][self['index']]
             tipo_token_apuntado = token_apuntado[0]
-            #print("token actual", token_actual)
             self['error'] = False
-            #print('Procesar: ', simbolo, 'con', tipo_token_apuntado)
             if esTerminal(simbolo):
-                #print('Procesar: ', simbolo, 'SI es terminal')
                 if simbolo == tipo_token_apuntado :
                     self['index'] += 1
-                    
-                    #print("Indice:", self['index'])
                 else:
                     self['error'] = True
                     break
 
             elif esNoTerminal(simbolo):
-                #print('Prcoesar:', simbolo, 'No es terminal')
                 pni(simbolo)
                 if self['error'] == True:
                     break 
@@ -246,7 +237,6 @@ def parser(cadena):
     def pni(noTerminal):
         for parteDerecha in prods[noTerminal]:
             self['error'] = False
-            #print("PNI de: ", parteDerecha)
             indexAux = self['index'] 
             procesar(parteDerecha)
             if self['error'] == False:
@@ -258,19 +248,19 @@ def parser(cadena):
     return parse()
 
 casos = [
-    ('var id ;', True), #funciona
-    ('', True), #funciona
-    ('fun id ( ) { } ', False), #funciona
-    ('fun id ( ) { var id ;}', False), #funciona
-    #('fun id ( ) { var id ;};', True) # HACER FUNCIONAR
-    ('fun;', False) #funciona
+    ('var id ;', True), 
+    ('', True), 
+    ('fun id ( ) { } ', False), 
+    ('fun id ( ) { var id ;}', False),
+    ('fun id ( ) { var id ; } ;', True),
+    ('fun s;', False) ,
+    ('a+b = c', False),
+    ('fun id ( id ) { var id ; } ;',True),
+    ('program begin end;', False)
+
 ]
 for c,r  in casos:
     assert parser(c) == r
 
-#print(parser('var id ;')) #FUNCIONA!!
-#print(parser('')) #FUNCIONA!!
-#print(parser('fun id ( ) { } ')) # HACER FUNCIONAR
-#assert(parser('fun id ( ) { var id ;}') == False)
-#assert(parser('fun id ( ) { var id ;};') == True)
+
 
