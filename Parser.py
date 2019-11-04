@@ -228,29 +228,29 @@ def parser(cadena):
             tipo_token_apuntado = token_apuntado[0]
             #print("token actual", token_actual)
             self['error'] = False
-            print('Procesar: ', simbolo, 'con', tipo_token_apuntado)
+            #print('Procesar: ', simbolo, 'con', tipo_token_apuntado)
             if esTerminal(simbolo):
-                print('Procesar: ', simbolo, 'SI es terminal')
+                #print('Procesar: ', simbolo, 'SI es terminal')
                 if simbolo == tipo_token_apuntado :
                     self['index'] += 1
-                    print("Indice:", self['index'])
+                    #print("Indice:", self['index'])
                 else:
                     self['error'] = True
                     break
 
             elif esNoTerminal(simbolo):
-                print('Prcoesar:', simbolo, 'No es terminal')
+                #print('Prcoesar:', simbolo, 'No es terminal')
                 pni(simbolo)
                 if self['error']:
                     break 
 
     def pni(noTerminal):
         for parteDerecha in prods[noTerminal]:
-            print("PNI de: ", parteDerecha)
+            #print("PNI de: ", parteDerecha)
             indexAux = self['index'] 
             procesar(parteDerecha)
             if self['error'] == True:
-                print('PNI ERROR, Backtracking!!!')
+                #print('PNI ERROR, Backtracking!!!')
                 self['index'] = indexAux #Pivote de retroceso
             
             else:
@@ -259,11 +259,18 @@ def parser(cadena):
 
     return parse()
 
-
+casos = [
+    ('var id ;', True),
+    ('', True),
+    ('fun id ( ) { } ', True),
+    ('fun id ( ) { var id ;}', False),
+    #('fun id ( ) { var id ;};', True)
+]
 
 
 #print(parser('var id ;')) #FUNCIONA!!
 #print(parser('')) #FUNCIONA!!
 #print(parser('fun id ( ) { } ')) # HACER FUNCIONAR
-print(parser('fun id ( ) { var id ;};'))
+#assert(parser('fun id ( ) { var id ;}') == False)
+#assert(parser('fun id ( ) { var id ;};') == True)
 
