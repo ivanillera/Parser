@@ -496,15 +496,6 @@ def d_equal(estado_anterior, caracter):
 	
 	return RESULTADO_TRAMPA
 
-#delta egual
-def d_equal(estado_anterior, caracter):
-	if estado_anterior == 0 and caracter == "=":
-		return 1
-	if estado_anterior == 1 and caracter == "=":
-		return 2
-
-	
-	return RESULTADO_TRAMPA
 
 #automata egual
 def a_equal(cadena):
@@ -1042,31 +1033,8 @@ def a_while(cadena):
 	else:
 		return RESULTADO_NO_ACEPTADO
 
-def d_fun(estado_anterior, caracter):
-    if estado_anterior == 0 and caracter == "f":
-        return 1
-    if estado_anterior == 1 and caracter == "u":
-        return 2
-    if estado_anterior == 2 and caracter == "n":
-        return 3
 
-    
-    return TRAMPA
 
-def a_fun(cadena):
-    Finales = [3]
-    estado_actual = 0
-
-    for caracter in cadena:
-        estado_proximo = d_fun(estado_actual, caracter)
-        if estado_proximo == TRAMPA:
-            return RESULTADO_TRAMPA
-        estado_actual = estado_proximo
-
-    if estado_actual in Finales:
-        return RESULTADO_ACEPTADO
-    else:
-        return RESULTADO_NO_ACEPTADO
 
 
 		

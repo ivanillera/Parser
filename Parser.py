@@ -211,16 +211,14 @@ def parser(cadena):
 
     def parse():
         pni('Programa')
-        if self['index'] == len(self['tokens']):
+        if self['index'] == len(self['tokens']): #Para solucionar list index out of range
             self['index'] -= 1
         token_apuntado = self['tokens'][self['index']]
         #print('tiene que comparar', token_actual[0], 'EOF', self['error'])
-        if self['error'] or token_apuntado[0]!='_EOF':
-            #print('Cadena no aceptada')
-            return False
-        else:
-            #print('Cadena aceptada')
+        if self['error'] == False and token_apuntado[0] == '_EOF':
             return True
+        else:
+            return False
 
     def procesar(parteDerecha):
         for simbolo in parteDerecha:
@@ -233,6 +231,7 @@ def parser(cadena):
                 #print('Procesar: ', simbolo, 'SI es terminal')
                 if simbolo == tipo_token_apuntado :
                     self['index'] += 1
+                    
                     #print("Indice:", self['index'])
                 else:
                     self['error'] = True
@@ -241,32 +240,33 @@ def parser(cadena):
             elif esNoTerminal(simbolo):
                 #print('Prcoesar:', simbolo, 'No es terminal')
                 pni(simbolo)
-                if self['error']:
+                if self['error'] == True:
                     break 
 
     def pni(noTerminal):
         for parteDerecha in prods[noTerminal]:
+            self['error'] = False
             #print("PNI de: ", parteDerecha)
             indexAux = self['index'] 
             procesar(parteDerecha)
-            if self['error'] == True:
-                #print('PNI ERROR, Backtracking!!!')
-                self['index'] = indexAux #Pivote de retroceso
-            
-            else:
+            if self['error'] == False:
                 break
+            if self['error'] == True:
+                self['index'] = indexAux
 
 
     return parse()
 
 casos = [
-    ('var id ;', True),
-    ('', True),
-    ('fun id ( ) { } ', True),
-    ('fun id ( ) { var id ;}', False),
-    #('fun id ( ) { var id ;};', True)
+    ('var id ;', True), #funciona
+    ('', True), #funciona
+    ('fun id ( ) { } ', False), #funciona
+    ('fun id ( ) { var id ;}', False), #funciona
+    #('fun id ( ) { var id ;};', True) # HACER FUNCIONAR
+    ('fun;', False) #funciona
 ]
-
+for c,r  in casos:
+    assert parser(c) == r
 
 #print(parser('var id ;')) #FUNCIONA!!
 #print(parser('')) #FUNCIONA!!
