@@ -1,7 +1,7 @@
 from Lexer import *
 
 
-
+## TODO: RECURSIVIDAD IZQUIERDA.
 prods = {
     'Programa':[
         ['ListaDecl', '_EOF'],
@@ -206,14 +206,16 @@ def parser(cadena):
         'error' : False,
     }
 
+
+
+
     def parse():
         pni('Programa')
-        #print('error',self['error'])  
         if self['index'] == len(self['tokens']):
             self['index'] -= 1
         token_apuntado = self['tokens'][self['index']]
-        #print('token apuntado:',token_apuntado[0],self['index']) 
-        if not self['error'] or token_apuntado[0] == '_EOF':
+        #print('tiene que comparar', token_actual[0], 'EOF', self['error'])
+        if self['error'] or token_apuntado[0]!='_EOF':
             #print('Cadena no aceptada')
             return False
         else:
@@ -224,44 +226,44 @@ def parser(cadena):
         for simbolo in parteDerecha:
             token_apuntado = self['tokens'][self['index']]
             tipo_token_apuntado = token_apuntado[0]
+            #print("token actual", token_actual)
             self['error'] = False
+            print('Procesar: ', simbolo, 'con', tipo_token_apuntado)
             if esTerminal(simbolo):
+                print('Procesar: ', simbolo, 'SI es terminal')
                 if simbolo == tipo_token_apuntado :
                     self['index'] += 1
-                    #print("Indice:", self['index'])
+                    print("Indice:", self['index'])
                 else:
                     self['error'] = True
                     break
 
             elif esNoTerminal(simbolo):
-                #print('Prcoesar:', simbolo, 'No es terminal')
+                print('Prcoesar:', simbolo, 'No es terminal')
                 pni(simbolo)
                 if self['error']:
                     break 
 
     def pni(noTerminal):
         for parteDerecha in prods[noTerminal]:
-            #print("PNI de: ", parteDerecha)
+            print("PNI de: ", parteDerecha)
             indexAux = self['index'] 
             procesar(parteDerecha)
             if self['error'] == True:
-                #print('PNI ERROR, Backtracking!!!')
-                self['index'] = indexAux #Pivote de retroceso           
+                print('PNI ERROR, Backtracking!!!')
+                self['index'] = indexAux #Pivote de retroceso
+            
             else:
                 break
+
 
     return parse()
 
 
-cases = [
-	(' ', True),
-	('var id ; ', True),
-	('Fun id ( ) { var id ; } ;', True),
-	('a = true ; ', True ),
-	('fun id ( ) { } ; ', True)
-]
 
-for cadena, res in cases:
-	assert parser(cadena) == res
 
- 
+#print(parser('var id ;')) #FUNCIONA!!
+#print(parser('')) #FUNCIONA!!
+#print(parser('fun id ( ) { } ')) # HACER FUNCIONAR
+print(parser('fun id ( ) { var id ;};'))
+
