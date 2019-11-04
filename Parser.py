@@ -198,14 +198,12 @@ def esNoTerminal(simbolo):
     return simbolo in no_Terminales
 
 def parser(cadena):
+
     self = {
         'tokens' : lexer(cadena),
         'index' : 0,
         'error' : False,
     }
-
-
-
 
     def parse():
         pni('Programa')
@@ -243,8 +241,6 @@ def parser(cadena):
                 break
             if self['error'] == True:
                 self['index'] = indexAux
-
-
     return parse()
 
 casos = [
@@ -256,8 +252,9 @@ casos = [
     ('fun s;', False) ,
     ('a+b = c', False),
     ('fun id ( id ) { var id ; } ;',True),
-    ('program begin end;', False)
-
+    ('program begin end;', False),
+    ('return ;', True),
+    ('return id = true ;', True)
 ]
 for c,r  in casos:
     assert parser(c) == r
