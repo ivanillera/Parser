@@ -1,7 +1,7 @@
 from Lexer import *
 
 
-## TODO: RECURSIVIDAD IZQUIERDA.
+
 prods = {
     'Programa':[
         ['ListaDecl', '_EOF'],
@@ -208,16 +208,16 @@ def parser(cadena):
 
     def parse():
         pni('Programa')
-        print('error',self['error'])  #tati
+        #print('error',self['error'])  
         if self['index'] == len(self['tokens']):
             self['index'] -= 1
         token_apuntado = self['tokens'][self['index']]
-        print('token apuntado:',token_apuntado[0],self['index']) #tati
+        #print('token apuntado:',token_apuntado[0],self['index']) 
         if not self['error'] or token_apuntado[0] == '_EOF':
-            print('Cadena no aceptada')
+            #print('Cadena no aceptada')
             return False
         else:
-            print('Cadena aceptada')
+            #print('Cadena aceptada')
             return True
 
     def procesar(parteDerecha):
@@ -228,7 +228,7 @@ def parser(cadena):
             if esTerminal(simbolo):
                 if simbolo == tipo_token_apuntado :
                     self['index'] += 1
-                    print("Indice:", self['index'])
+                    #print("Indice:", self['index'])
                 else:
                     self['error'] = True
                     break
@@ -241,11 +241,11 @@ def parser(cadena):
 
     def pni(noTerminal):
         for parteDerecha in prods[noTerminal]:
-            print("PNI de: ", parteDerecha)
+            #print("PNI de: ", parteDerecha)
             indexAux = self['index'] 
             procesar(parteDerecha)
             if self['error'] == True:
-                print('PNI ERROR, Backtracking!!!')
+                #print('PNI ERROR, Backtracking!!!')
                 self['index'] = indexAux #Pivote de retroceso           
             else:
                 break
@@ -253,16 +253,15 @@ def parser(cadena):
     return parse()
 
 
+cases = [
+	(' ', True),
+	('var id ; ', True),
+	('Fun id ( ) { var id ; } ;', True),
+	('a = true ; ', True ),
+	('fun id ( ) { } ; ', True)
+]
 
+for cadena, res in cases:
+	assert parser(cadena) == res
 
-#print(parser('var id ; ')) #FUNCIONA!! comprobado por tati
-#print(parser(' ')) #FUNCIONA!! comprobado por tati
-#print(parser('Fun idO ( ) { var id ; } ;')) #FUNCIONA comprobado por tati
-#print(parser('fun id ( ) { } ; ')) #FUNCIONA comprobado por tati
-#print(parser('a = true ; ')) #FUNCIONA!! comprobado por tati
-#print(parser('fun id ( ) { } ; '))  #FUNCIONA!!  comprobado por tati
-#print(parser(' id ( ) { } ; '))  # HACER FUNCIONAR
-#print(parser(' while ( a = true ; ) { } ; ')) #comprobado por tati
-
-
-
+ 
